@@ -13,37 +13,60 @@ const categoriesData = async () => {
     const res = await fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
     const data = await res.json();
     displayCategories(data.categories)
-
-
-
-
 }
+
 // videos Data load 
 const videosData = async () => {
     const res = await fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
     const data = await res.json()
     displayVideos(data.videos)
-
-
-
-
 }
+
+// btn Categories id
+const videosCategoriesData = async (id) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    const data = await res.json()
+    displayVideos(data.category);
+}
+
+
+
+
 
 // display Show Categories 
 const displayCategories = (categories) => {
     const categoriesContainer = document.querySelector('#categories-container');
     categories.forEach(item => {
-        const categoriesBtn = document.createElement('button')
-        categoriesBtn.className = 'btn bg-primary-color text-white font-bold text-base'
-        categoriesBtn.innerText = item.category
-
-        categoriesContainer.append(categoriesBtn)
+        const categoriesBtnContainer = document.createElement('div')
+        categoriesBtnContainer.innerHTML = `
+         <button onclick="videosCategoriesData(${item.category_id})" class="btn bg-primary-color text-white font-bold text-base">
+         ${item.category}
+         </button>
+        `
+        categoriesContainer.append(categoriesBtnContainer)
     })
 }
 
 // display Show Categories 
 const displayVideos = (videos) => {
     const videosContainer = document.querySelector('#videos');
+    videosContainer.innerHTML = '';
+
+    if (videos.length === 0) {
+        videosContainer.classList.remove('grid')
+        videosContainer.innerHTML = `
+            <div class="min-h-[250px] flex items-center justify-center gap-4 mt-[100px]">
+                <img src="asset/Icon.png" />
+                
+            </div>
+            <h2 class="text-4xl font-bold text-center">
+                Oops!! Sorry, There is no <br> content here
+            </h2>
+        `
+    } else {
+        videosContainer.classList.add('grid')
+    }
+
     videos.forEach(video => {
         console.log(video);
         const card = document.createElement('div')
