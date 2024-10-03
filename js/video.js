@@ -26,10 +26,11 @@ const categoriesData = async () => {
 }
 
 // videos Data load 
-const videosData = async () => {
-    const res = await fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
+const videosData = async (searchText = "") => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
     const data = await res.json()
     displayVideos(data.videos)
+
 }
 
 // btn Categories id
@@ -45,6 +46,24 @@ const videosCategoriesData = async (id) => {
 }
 
 
+// Display Details Data load 
+const loadDetails = async (videoId) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`)
+    const data = await res.json()
+    displayDetails(data);
+
+}
+
+// Display Details Show
+const displayDetails = (video) => {
+    document.getElementById('details-content').innerHTML = `
+        <img class="w-full" src="${video.video.thumbnail} "/>
+        <p class="text-justify my-3">${video.video.description}</p>
+    
+    `
+
+    document.getElementById('customModal').showModal()
+}
 
 
 
@@ -61,6 +80,9 @@ const displayCategories = (categories) => {
         categoriesContainer.append(categoriesBtnContainer)
     })
 }
+
+
+
 
 // display Show Categories 
 const displayVideos = (videos) => {
@@ -83,7 +105,7 @@ const displayVideos = (videos) => {
     }
 
     videos.forEach(video => {
-        console.log(video);
+        // console.log(video);
         const card = document.createElement('div')
         card.className = 'card card-compact'
         card.innerHTML = `
@@ -105,12 +127,20 @@ const displayVideos = (videos) => {
                          ${video.authors[0].verified === true ? `<img class="h-[20px] w-[20px] object-cover rounded-full" src="https://img.icons8.com/?size=48&id=p9jKUHLk5ejE&format=png" />` : ''}
                     </div>
                     <p class="text-gray-500 text-base">${video.others.views} views</p>
+                    <button onclick="loadDetails('${video.video_id}')" class="btn bg-primary-color text-white h-2 min-h-7">
+                        Details
+                    </button>
                 </div>
             </div>
         `
         videosContainer.append(card)
     })
 }
+
+const searchData = document.getElementById('search').addEventListener("keyup", (e) => {
+    videosData(e.target.value)
+
+})
 
 
 categoriesData()
