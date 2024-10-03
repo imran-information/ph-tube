@@ -8,6 +8,16 @@ const setTimeConvert = (time) => {
 }
 
 
+// remove Active Class
+const removeActiveClass = () => {
+    const buttons = document.getElementsByClassName('btn')
+    for (const btn of buttons) {
+        btn.classList.remove('active')
+    }
+
+}
+
+
 // categories Data load 
 const categoriesData = async () => {
     const res = await fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
@@ -26,6 +36,11 @@ const videosData = async () => {
 const videosCategoriesData = async (id) => {
     const res = await fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     const data = await res.json()
+
+    removeActiveClass()
+    const activeBtn = document.getElementById(`btn-${id}`)
+    activeBtn.classList.add('active')
+
     displayVideos(data.category);
 }
 
@@ -39,7 +54,7 @@ const displayCategories = (categories) => {
     categories.forEach(item => {
         const categoriesBtnContainer = document.createElement('div')
         categoriesBtnContainer.innerHTML = `
-         <button onclick="videosCategoriesData(${item.category_id})" class="btn bg-primary-color text-white font-bold text-base">
+         <button id="btn-${item.category_id}" onclick="videosCategoriesData(${item.category_id})" class="btn">
          ${item.category}
          </button>
         `
